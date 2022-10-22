@@ -12,3 +12,4 @@ def getRecipe(search):
     data = res.read()
     print(data.decode("utf-8"))
 
+getRecipe("paneer")
