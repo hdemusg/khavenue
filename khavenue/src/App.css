@@ -7,6 +7,10 @@
   font-family: "Avenir", sans-serif
 }
 
+.nav-title {
+  color: black;
+}
+
 .button {
   background-color: red;
   border-color: black;
@@ -24,16 +28,40 @@
   color: #0f0
 }
 
+.userpic {
+  border-radius: 50%
+}
+
+.profileText {
+  color: black
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
 
+.navbar {
+  background-color: #0f0;
+  justify-content: top;
+}
+
+.recipe {
+  color: white;
+}
+
+.profile {
+  background-color: #0f0;
+  padding: 20px;
+  margin: 10px;
+  width: 80%;
+}
+
 .App-header {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
