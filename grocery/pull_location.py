@@ -63,12 +63,11 @@ for location in data:
     zipcode = address.get("zipCode")
     fullAddress = f"{totalAddressLine}, {city}, {state}, {zipcode}"
     locations[location.get("locationId")] = {"address": fullAddress}
-print(locations)
+print(len(locations))
 
 ### Pull inventory for each location in locations
 product_url = kroger_url + 'products'
 for l in locations:
-    print(type(l))
     l_id = l
     headers2 = {
             'Content-Type': 'application/json',
@@ -79,7 +78,11 @@ for l in locations:
     'filter.locationId' : l_id,
     }
     response2 = requests.get(product_url, headers=headers2, params=params2)
-    print(response2.text)
+    products = json.loads(response2.text).get('data')
+    if len(products) == 0:
+        del(locations[l_id])
+print(len(locations))
+
 
 
 
