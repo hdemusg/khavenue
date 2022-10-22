@@ -84,6 +84,8 @@ def pull_locations(zipcode):
             del(locations[l_id])
     for l in locations:
         print(locations[l]['address'])
+        
+pull_locations('30332')
 
 
 
