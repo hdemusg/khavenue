@@ -13,4 +13,3 @@ def getRecipe(search):
     print(data.decode("utf-8"))
     return data.decode("utf-8")
 
-getRecipe("paneer")
