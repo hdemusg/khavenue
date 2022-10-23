@@ -7,7 +7,7 @@ def entityAnalysis(text):
     sp = []
     credentials = service_account.Credentials.from_service_account_file('./key.json')
     client = language_v1.LanguageServiceClient(credentials=credentials)
-    for tx in text:   
+    for tx in text['ingredients']:   
         raw = re.sub(r'[0-9/]+', r'', tx.strip())
         raw = re.sub(r'\(.*?\)',r'',raw)
         type = language_v1.Document.Type.PLAIN_TEXT
@@ -63,10 +63,3 @@ def entityAnalysis(text):
     
         sp.append(searchphrase[:-1])
     return sp
-
-if __name__ == "__main__":
-    with open('ingredients.txt', 'r') as f:
-        for line in f.readlines():
-            raw = re.sub(r'[0-9/]+', r'', line.strip())
-            raw = re.sub(r'\(.*?\)',r'',raw)
-            print(entityAnalysis(raw))

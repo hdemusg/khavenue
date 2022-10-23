@@ -1,4 +1,5 @@
 import http.client
+import json
 conn = http.client.HTTPSConnection("edamam-recipe-search.p.rapidapi.com")
 
 headers = {
@@ -7,9 +8,11 @@ headers = {
     }
 def getRecipe(search):
     query = "/search?q=" + search
+    query = query.replace(" ", "%20")
     conn.request("GET", query, headers=headers)
     res = conn.getresponse()
     data = res.read()
-    print(data.decode("utf-8"))
-    return data.decode("utf-8")
-
+    json_data = data.decode('utf-8')
+    raw_data = json.loads(json_data)
+    dat = raw_data['hits']
+    return(dat)

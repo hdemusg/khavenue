@@ -24,15 +24,33 @@ function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
+  const [query, setQuery] = useState("");
+
+  const [lat, setLat] = useState("33.0")
+  const [lon, setLon] = useState("-84.0")
+
   function handleSignOut() {
     signOut(auth).then(() => {
       setUser(null)
       setToken(null)
       setLoggedIn(false)
-
+      console.log("bye felicia")
     }).catch((error) => {
       console.log(error)
     });
+  }
+
+  function searchForm() {
+    return (
+      <form onSubmit={(e) => search(e)} style={{display: 'flex', flexDirection: 'column'}}>
+        <label>Recipe Search:
+          <input type="text" value={query} onChange={(e) => {
+            setQuery(e.target.value);
+          }}/>
+        </label>
+        <input type="submit" />
+      </form>
+    )
   }
 
   function signOutButton() {
@@ -49,13 +67,35 @@ function App() {
     )
   }
 
+  function geolocate() {
+    
+  }
+
+  function search(e) {
+    e.preventDefault()
+    console.log(query)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(encodePosition).then();
+    }
+    const request = new Request('https://khavenue.uc.r.appspot.com/main/' + query + '/' + lat + '/' + lon, {method: 'POST'});
+    request.json().then((data) => {
+      console.log(data);
+    });
+  }
+
+  function encodePosition(position) {
+    setLat(position.coords.latitude)
+    setLon(position.coords.longitude)
+    console.log(lat, lon)
+  }
+
   async function handleSignIn() {
     signInWithPopup(auth, provider)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
       const credential = GoogleAuthProvider.credentialFromResult(result);
       setToken(credential.accessToken);
-      console.log(credential.accessToken)
+      //console.log(credential.accessToken)
       // The signed-in user info.
       setUser(result.user);
       const data =  {
@@ -67,7 +107,7 @@ function App() {
       // console.log(result.user['email'])
       // console.log(data);
       // const res = db.collection('users').doc('login').set(data);
-      console.log(result.user, token)
+      //console.log(result.user, token)
       setLoggedIn(true);
 
     }).catch((error) => {
@@ -81,7 +121,7 @@ function App() {
       console.log(errorCode, errorMessage, credential)
     });
 
-    console.log(user)
+    //console.log(user)
   }
 
   function profileInfo() {
@@ -109,10 +149,12 @@ function App() {
 
           <Card style={{backgroundColor: 'orange', width: '100%', justifyContent: 'space-between', lineHeight: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '10px'}} className="preferences">
             <h3 style={{color: 'white'}} >Preferences</h3>
-            <div style={{backgroundColor: 'yellow'}}>Hello</div>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                {searchForm()}
+            </div>
           </Card>
           <div>
-            <h2 className="recipe">Recipes</h2>
+            <h2 style={{color: 'black'}} className="recipe">Recipes</h2>
           </div>
           </div>}
         </div>

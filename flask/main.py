@@ -5,8 +5,8 @@ import requests
 import json
 from pull_locations import pullLocations 
 from language import entityAnalysis
-from uszipcode import Zipcode, SearchEngine
-
+from geopy.extra.rate_limiter import RateLimiter
+from geopy.geocoders import Nominatim
 
 app = Flask(__name__)
 
@@ -37,10 +37,8 @@ def extractIngredients(hits):
 def locations(zipcode, items):
     return pullLocations(zipcode, items)
 
-@app.route("/language", methods=["POST"])
+@app.route("/language/<raw_data>")
 def getSearchphrases(raw_data):
-    j = request.get_json()
-    print(j)
     recipeList = []
     if(len(raw_data)==0):
         print("No Hits")
@@ -57,13 +55,18 @@ def getSearchphrases(raw_data):
         recipeList.append(json.dumps(ret))
     return recipeList
 
-@app.route("/main/<keyword>/<lat>/<lon>", methods = ["POST"])
+@app.route("/main/<keyword>/<lat>/<lon>")
 def main(keyword, lat, lon):
     dat = getRecipe(keyword)
     ingr = getSearchphrases(dat)
-    search = SearchEngine()
-    zipcode = search.by_coordinates(lat, lon, 1)[0]
-    return pullLocations(zipcode, ingr)
+    geocoder = Nominatim(user_agent = 'your_app_name')
+    geocode = RateLimiter(geocoder.reverse, min_delay_seconds = 1) 
+    location = geocode((lat, lon))
+    zipcode = location.raw['address']['postcode']
+    #print(zipcode)
+    res = pullLocations(zipcode, ingr)
+    print(res)
+    return res
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8080, debug=True)
