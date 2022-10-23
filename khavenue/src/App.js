@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
-import './App.css';
 import config from './firebase.config.js'
 import { signOut, GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth';
 import {useState} from 'react'
@@ -10,9 +9,8 @@ import Card from 'react-bootstrap/Card'
 import {getFirestore, collection, getDocs} from 'firebase/firestore/lite'
 import Image from 'react-bootstrap/Image'
 import { doc, setDoc } from "firebase/firestore"; 
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
 import NavigationBar from './components/NavigationBar.js'
+import './App.css';
 
 function App() {
 
@@ -43,6 +41,14 @@ function App() {
     )
   }
 
+  function signInButton() {
+    return (
+      <GoogleButton
+      onClick={handleSignIn}>
+    </GoogleButton>
+    )
+  }
+
   function handleSignIn() {
     signInWithPopup(auth, provider)
     .then((result) => {
@@ -69,24 +75,32 @@ function App() {
     console.log(user)
   }
 
+  function profileInfo() {
+    return (
+      <div style={{justifyContent: 'space-between', lineHeight: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '10px'}}>
+        <Image style={{marginRight: '20px'}} className="userpic" src={user.photoURL}>
+            </Image>
+          <p style={{marginRight: '20px', color: '#FFFDD0'}} className="profileText">Welcome, {user.displayName.split(" ")[0]}!</p>
+          {signOutButton()}
+      </div>
+    )
+  }
+
   return (
     <div className="App">
-      <NavigationBar>
+      <NavigationBar profile={loggedIn === false ? signInButton() : profileInfo()}>
         </NavigationBar>
       <header className="App-header">
         <div className="name">
-          {loggedIn === false ? <div>
+          {loggedIn === false ? <div className="signIn">
             <h1>khavenue</h1>
-            <GoogleButton
-            onClick={handleSignIn}>
-          </GoogleButton>
+            <h3>Find recipes that are healthy and convenient to prepare!</h3>
+      
             </div> : <div>
 
-          <Card className="profile">
-            <Image className="userpic" src={user.photoURL}>
-            </Image>
-          <p className="profileText">Welcome, {user.displayName.split(" ")[0]}!</p>
-          {signOutButton()}
+          <Card style={{backgroundColor: 'orange', width: '100%', justifyContent: 'space-between', lineHeight: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '10px'}} className="preferences">
+            <h3 style={{color: 'white'}} >Preferences</h3>
+            <div style={{backgroundColor: 'yellow'}}>Hello</div>
           </Card>
           <div>
             <h2 className="recipe">Recipes</h2>

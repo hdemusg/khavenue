@@ -1,6 +1,5 @@
 import requests
 import json
-from geopy.geocoders import Nominatim  
 '''
 g = geocoder.ip('me')
 coordinates = g.latlng

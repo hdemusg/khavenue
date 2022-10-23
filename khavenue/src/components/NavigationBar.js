@@ -2,16 +2,16 @@ import React from 'react'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import '../app.css'
+import '../App.css'
 
 class NavigationBar extends React.Component {
     render() {
-      return (<Navbar className="navbar" fixed="top">
+      return (<Navbar style={{marginTop: '0px'}} className="navbar" fixed="top">
       <Container>
-      <div clasName="left">
-
-      </div>
+      <div style={{justifyContent: 'space-between', lineHeight: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '10px'}}>
       <h1 className="nav-title">khavenue</h1>
+      {this.props.profile}
+      </div>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
           </Nav>

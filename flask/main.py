@@ -1,5 +1,9 @@
 from flask import Flask, render_template, request
 from getrecipes import getRecipe
+import requests
+import json
+from pull_locations import pullLocations 
+
 app = Flask(__name__)
 
 @app.route("/")

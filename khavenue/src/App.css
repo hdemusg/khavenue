@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  background-color: black;
+  background-color: #FFFDD0;
 }
 
 * {
@@ -8,14 +8,17 @@
 }
 
 .nav-title {
-  color: black;
+  color: #FFFDD0;
 }
 
 .button {
-  background-color: red;
+  background-color: yellow;
   border-color: black;
-  color: white;
-  padding: 12px;
+  color: black;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 1px;
+  padding-bottom: 1px;
   border-radius: 3px;
 }
 
@@ -24,12 +27,21 @@
   pointer-events: none;
 }
 
+.signIn {
+  align-items: center;
+  color: #FF2D08
+}
+
 .name {
-  color: #0f0
+  color: #CF240A;
+  justify-content: center;
 }
 
 .userpic {
-  border-radius: 50%
+  border-radius: 50%;
+  max-height: 50px;
+  max-width: 50px;
+
 }
 
 .profileText {
@@ -42,8 +54,12 @@
   }
 }
 
+.left {
+  align-items: left;
+}
+
 .navbar {
-  background-color: #0f0;
+  background-color: #CF240A;
   justify-content: top;
 }
 
@@ -51,8 +67,8 @@
   color: white;
 }
 
-.profile {
-  background-color: #0f0;
+.preferences {
+  background-color: #CF240A;
   padding: 20px;
   margin: 10px;
   width: 80%;
@@ -62,7 +78,6 @@
   min-height: 100vh;
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
