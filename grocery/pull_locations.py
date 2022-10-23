@@ -1,6 +1,6 @@
 import requests
 import json
-from geopy.geocoders import Nominatim  
+import geopy.distance
 '''
 g = geocoder.ip('me')
 coordinates = g.latlng
@@ -18,7 +18,7 @@ print(places[0]['name'])
 '''
 
 
-def pullLocations(zipcode):
+def pullLocations(zipcode, items):
     kroger_url = "https://api.kroger.com/v1/"
 
     ### OAuth2 token generation
@@ -66,35 +66,45 @@ def pullLocations(zipcode):
         fullAddress = f"{totalAddressLine}, {city}, {state}, {zipcode}"
         locations[location.get("locationId")] = {"address": fullAddress}
 
-    ### Pull inventory for each location in locations
+    ### Pull inventory for each location in locations- this is also where heuristic for ranking data is determined
     product_url = kroger_url + 'products'
+    food_items = json.loads(items)['results']
+    final_locations = []
     for l in locations:
+        location_zip = locations[l]["address"].split(",")[-1].strip()
+        count_items = 0
+        freq_items = 0
         l_id = l
         headers2 = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {access_token}',
-            }
-        params2 = {
-        'filter.term': "milk",
-        'filter.locationId' : l_id,
         }
-        response2 = requests.get(product_url, headers=headers2, params=params2)
-        products = json.loads(response2.text).get('data')
-        if len(products) == 0:
-            del(locations[l_id])
-    final_locations = []
-    for ln in locations:
-        final_locations.append(locations[ln]["address"])
-    
+        for food in food_items:
+            params2 = {
+            'filter.term': food,
+            'filter.locationId' : l_id,
+            }
+            response2 = requests.get(product_url, headers=headers2, params=params2)
+            products = json.loads(response2.text).get('data')
+            if len(products) > 0:
+                count_items += 1
+                freq_items += len(products)
+        if count_items >= len(food_items):
+            url1 = "https://maps.googleapis.com/maps/api/geocode/json?address=" + str(location_zip) + "&key=AIzaSyCOS1pA1dN5XWyseeuvB4lFXTNJqs9k7AM"
+            url2 = "https://maps.googleapis.com/maps/api/geocode/json?address=" + str(zipcode) + "&key=AIzaSyCOS1pA1dN5XWyseeuvB4lFXTNJqs9k7AM"
+            response_1 = requests.post(url1)
+            response_2 = requests.post(url2)
+            location_data = json.loads(response_1.text)['results'][0]
+            origin_data = json.loads(response_2.text)['results'][0]
+            l1, l2 = location_data['geometry']['location']['lat'], location_data['geometry']['location']['lng']
+            o1, o2 = origin_data['geometry']['location']['lat'], origin_data['geometry']['location']['lng']
+            coord_l = (l1, l2)
+            coord_o = (o1, o2)
+            # print(l1, l2)
+            # print(o1, o2)
+            dist = geopy.distance.geodesic(coord_o, coord_l).km
+            final_locations.append([locations[l]["address"], freq_items + dist])
     return json.dumps({'locations': final_locations})
 
-# print(pullLocations('30332'))
 
-
-
-
-
-
-
-
-
+# print(pullLocations('30332', json.dumps({"results": ['milk', 'pizza', 'strawberries']})))

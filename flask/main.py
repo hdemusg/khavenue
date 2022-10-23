@@ -15,9 +15,9 @@ def root():
 def recipes(keyword):
     return getRecipe(keyword)
 
-@app.route("/grocery/<zipcode>")
-def locations(zipcode):
-    return pullLocations(zipcode)
+@app.route("/grocery/<zipcode>/<items>")
+def locations(zipcode, items):
+    return pullLocations(zipcode, items)
 
 @app.route("/language", methods=["POST"])
 def getSearchphrases():

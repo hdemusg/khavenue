@@ -1,2 +1,3 @@
-# *.txt
-# data_split.py
+*.txt
+*.DS_Store
+data_split.py
