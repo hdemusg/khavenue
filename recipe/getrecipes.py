@@ -1,11 +1,13 @@
 import http.client
 import json
+from nlp import * 
 conn = http.client.HTTPSConnection("edamam-recipe-search.p.rapidapi.com")
 
 headers = {
     'X-RapidAPI-Key': "06009ea3fdmshd55b73a266b1d30p13044ajsn1654bf699e83",
     'X-RapidAPI-Host': "edamam-recipe-search.p.rapidapi.com"
     }
+
 def getRecipe(search):
     query = "/search?q=" + search
     query = query.replace(" ", "%20")
@@ -14,7 +16,23 @@ def getRecipe(search):
     data = res.read()
     json_data = data.decode("utf-8")
     raw_data = json.loads(json_data)
-    return(raw_data["hits"])
+    dat = raw_data["hits"]
+    return(dat)
+
+def extractIngredients(hits):
+    recipeList = []
+    if(len(hits)==0):
+        print("No Hits")
+        return []
+    for recipe in hits:
+        rList = []
+        ingrList = recipe["recipe"]["ingredientLines"]
+        for ingr in ingrList:
+            print()
+    return recipeList
+
+
+
 
 '''
 foods = ["pizza", "pasta", "salad", "fried rice", "sandwich", "burrito", "taco", "enchilada", "noodle", "sausage", "hot dog", "paneer", "indian", "pad thai", "tikka masala", 
