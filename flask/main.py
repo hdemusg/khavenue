@@ -16,7 +16,7 @@ def root():
 
 @app.route("/recipes/<keyword>")
 def recipes(keyword):
-    return getRecipe(keyword)
+    return getRecipe(keyword)[:5]
 '''
     dat = raw_data["hits"]
     return(dat)
@@ -58,15 +58,56 @@ def getSearchphrases(raw_data):
 @app.route("/main/<keyword>/<lat>/<lon>")
 def main(keyword, lat, lon):
     dat = getRecipe(keyword)
-    ingr = getSearchphrases(dat)
+    ingr = getIngredients(dat)
     geocoder = Nominatim(user_agent = 'your_app_name')
     geocode = RateLimiter(geocoder.reverse, min_delay_seconds = 1) 
     location = geocode((lat, lon))
-    zipcode = location.raw['address']['postcode']
+    zipcode = location.raw["address"]["postcode"]
     #print(zipcode)
     res = pullLocations(zipcode, ingr)
     print(res)
     return res
+
+@app.route("/ingredients/<raw_data>")
+def getIngredients(raw_data):
+    recipeList = []
+    if(len(raw_data)==0):
+        print("No Hits")
+        return []
+    for recipe in raw_data:
+        rList = {
+            "ingredients": []
+        }
+        ingrList = recipe["recipe"]["ingredientLines"]
+        rList["ingredients"]=ingrList
+        recipeList.append(json.dumps(rList))
+    return recipeList
+
+@app.route("/nutrition/<raw_data>")
+def getNutrition(raw_data):
+    nutritionList = []
+    if(len(raw_data)==0):
+        print("No Hits")
+        return []
+    for recipe in raw_data:
+        rList = {
+            "Calories": [],
+            "Fat": [],
+            "Trans Fat": [],
+            "Carbs": [],
+            "Sugar": [],
+            "Protein": [],
+            "Sodium": []
+        }
+        rList["Calories"]=str(recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]["quantity"]) + "kcal"
+        rList["Fat"]= str(recipe["recipe"]["totalNutrients"]["FAT"]["quantity"]) + "g"
+        rList["Trans Fat"]= str(recipe["recipe"]["totalNutrients"]["FATRN"]["quantity"]) + "g"
+        rList["Carbs"]= str(recipe["recipe"]["totalNutrients"]["CHOCDF"]["quantity"]) + "g"
+        rList["Sugar"]= str(recipe["recipe"]["totalNutrients"]["SUGAR"]["quantity"]) + "g"
+        rList["Protein"]= str(recipe["recipe"]["totalNutrients"]["PROCNT"]["quantity"]) + "g"
+        rList["Sodium"]= str(recipe["recipe"]["totalNutrients"]["NA"]["quantity"]) + "mg"
+        nutritionList.append(json.dumps(rList))
+    return nutritionList
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8080, debug=True)

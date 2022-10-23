@@ -14,5 +14,5 @@ def getRecipe(search):
     data = res.read()
     json_data = data.decode('utf-8')
     raw_data = json.loads(json_data)
-    dat = raw_data['hits']
+    dat = raw_data["hits"]
     return(dat)

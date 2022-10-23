@@ -7,7 +7,7 @@ def entityAnalysis(text):
     sp = []
     credentials = service_account.Credentials.from_service_account_file('./key.json')
     client = language_v1.LanguageServiceClient(credentials=credentials)
-    for tx in text['ingredients']:   
+    for tx in text["ingredients"]:   
         raw = re.sub(r'[0-9/]+', r'', tx.strip())
         raw = re.sub(r'\(.*?\)',r'',raw)
         type = language_v1.Document.Type.PLAIN_TEXT

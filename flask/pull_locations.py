@@ -14,8 +14,8 @@ def pullLocations(zipcode, items):
     \
     }
     payload = {
-    'grant_type': 'client_credentials',
-    'scope':['product.compact'],
+    "grant_type": "client_credentials",
+    "scope":["product.compact"],
     }
     response = requests.post(auth_url, headers=headers, data=payload)
     access_token = json.loads(response.text).get('access_token')
@@ -26,8 +26,8 @@ def pullLocations(zipcode, items):
     'Authorization': f'Bearer {access_token}',
     }
     params = {
-        'filter.zipCode.near' : zipcode,
-        'filter.chain': 'Kroger'
+        "filter.zipCode.near" : zipcode,
+        "filter.chain": "Kroger"
     }
     locations_url = kroger_url + 'locations'
     response1 = requests.get(locations_url, headers=headers1, params=params)
@@ -51,7 +51,8 @@ def pullLocations(zipcode, items):
     product_url = kroger_url + 'products'
     locationsByRecipe = []
     for i in items:
-        food_items = json.loads(i)['results']
+        food_items = json.loads(i)["results"]
+        print(food_items)
         final_locations = []
         for l in locations:
             location_zip = locations[l]["address"].split(",")[-1].strip()
@@ -64,12 +65,12 @@ def pullLocations(zipcode, items):
             }
             for food in food_items:
                 params2 = {
-                'filter.term': food,
-                'filter.locationId' : l_id,
+                "filter.term": food,
+                "filter.locationId" : l_id,
                 }
                 response2 = requests.get(product_url, headers=headers2, params=params2)
-                products = json.loads(response2.text).get('data')
-                if len(products) > 0:
+                products = json.loads(response2.text).get("data")
+                if products != None and len(products) > 0:
                     count_items += 1
                     freq_items += len(products)
             if count_items >= len(food_items):
@@ -77,15 +78,15 @@ def pullLocations(zipcode, items):
                 url2 = "https://maps.googleapis.com/maps/api/geocode/json?address=" + str(zipcode) + "&key=AIzaSyCOS1pA1dN5XWyseeuvB4lFXTNJqs9k7AM"
                 response_1 = requests.post(url1)
                 response_2 = requests.post(url2)
-                location_data = json.loads(response_1.text)['results'][0]
-                origin_data = json.loads(response_2.text)['results'][0]
-                l1, l2 = location_data['geometry']['location']['lat'], location_data['geometry']['location']['lng']
-                o1, o2 = origin_data['geometry']['location']['lat'], origin_data['geometry']['location']['lng']
+                location_data = json.loads(response_1.text)["results"][0]
+                origin_data = json.loads(response_2.text)["results"][0]
+                l1, l2 = location_data["geometry"]["location"]["lat"], location_data["geometry"]["location"]["lng"]
+                o1, o2 = origin_data["geometry"]["location"]["lat"], origin_data["geometry"]["location"]["lng"]
                 coord_l = (l1, l2)
                 coord_o = (o1, o2)
             # print(l1, l2)
             # print(o1, o2)
                 dist = geopy.distance.geodesic(coord_o, coord_l).km
                 final_locations.append([locations[l]["address"], freq_items + dist])
-                locationsByRecipe.append(json.dumps({'locations': final_locations}))
+                locationsByRecipe.append(json.dumps({"locations": final_locations}))
     return locationsByRecipe
