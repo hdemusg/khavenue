@@ -18,7 +18,7 @@ print(places[0]['name'])
 '''
 
 
-def pull_locations(zipcode):
+def pullLocations(zipcode):
     kroger_url = "https://api.kroger.com/v1/"
 
     ### OAuth2 token generation
@@ -82,10 +82,13 @@ def pull_locations(zipcode):
         products = json.loads(response2.text).get('data')
         if len(products) == 0:
             del(locations[l_id])
-    for l in locations:
-        print(locations[l]['address'])
-        
-pull_locations('30332')
+    final_locations = []
+    for ln in locations:
+        final_locations.append(locations[ln]["address"])
+    
+    return json.dumps({'locations': final_locations})
+
+# print(pullLocations('30332'))
 
 
 
