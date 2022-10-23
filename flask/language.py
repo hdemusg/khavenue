@@ -62,7 +62,7 @@ def entityAnalysis(text):
         # the automatically-detected language.
     
         sp.append(searchphrase[:-1])
-    return json.dumps(sp)
+    return sp
 
 if __name__ == "__main__":
     with open('ingredients.txt', 'r') as f:

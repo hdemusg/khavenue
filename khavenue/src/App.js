@@ -107,7 +107,7 @@ function App() {
       
             </div> : <div>
 
-          <Card style={{backgroundColor: 'orange', width: '200%', justifyContent: 'space-between', lineHeight: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '10px'}} className="preferences">
+          <Card style={{backgroundColor: 'orange', width: '100%', justifyContent: 'space-between', lineHeight: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '10px'}} className="preferences">
             <h3 style={{color: 'white'}} >Preferences</h3>
             <div style={{backgroundColor: 'yellow'}}>Hello</div>
           </Card>

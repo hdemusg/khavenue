@@ -23,7 +23,11 @@ def locations(zipcode):
 def getSearchphrases():
     j = request.get_json()
     print(j)
-    return entityAnalysis(j['ingredients'])
+    sp = entityAnalysis(j['ingredients'])
+    print(type(sp))
+    ret = {}
+    ret["results"] = sp
+    return json.dumps(ret)
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8080, debug=True)
