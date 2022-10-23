@@ -6,7 +6,7 @@ import {useState} from 'react'
 import Button from 'react-bootstrap/Button'
 import GoogleButton from 'react-google-button'
 import Card from 'react-bootstrap/Card'
-import {getFirestore, collection, getDocs} from 'firebase/firestore/lite'
+import {getFirestore, collection, getDocs} from 'firebase/firestore'
 import Image from 'react-bootstrap/Image'
 import { doc, setDoc } from "firebase/firestore"; 
 import NavigationBar from './components/NavigationBar.js'
@@ -18,7 +18,7 @@ function App() {
   const analytics = getAnalytics(app)
   const provider = new GoogleAuthProvider();
   const auth = getAuth();
-  const db = getFirestore(app);
+  const db = getFirestore();
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
@@ -49,7 +49,7 @@ function App() {
     )
   }
 
-  function handleSignIn() {
+  async function handleSignIn() {
     signInWithPopup(auth, provider)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
@@ -58,6 +58,15 @@ function App() {
       console.log(credential.accessToken)
       // The signed-in user info.
       setUser(result.user);
+      const data =  {
+        displayName: result.user["displayName"],
+        email: result.user["email"],
+        numUses: 0
+      }
+      setDoc(doc(db, "users", result.user["uid"]), data);
+      // console.log(result.user['email'])
+      // console.log(data);
+      // const res = db.collection('users').doc('login').set(data);
       console.log(result.user, token)
       setLoggedIn(true);
 
@@ -66,10 +75,10 @@ function App() {
       const errorCode = error.code;
       const errorMessage = error.message;
       // The email of the user's account used.
-      const email = error.customData.email;
+      // const email = error.customData.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
-      console.log(errorCode, errorMessage, email, credential)
+      console.log(errorCode, errorMessage, credential)
     });
 
     console.log(user)
@@ -98,7 +107,7 @@ function App() {
       
             </div> : <div>
 
-          <Card style={{backgroundColor: 'orange', width: '100%', justifyContent: 'space-between', lineHeight: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '10px'}} className="preferences">
+          <Card style={{backgroundColor: 'orange', width: '200%', justifyContent: 'space-between', lineHeight: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '10px'}} className="preferences">
             <h3 style={{color: 'white'}} >Preferences</h3>
             <div style={{backgroundColor: 'yellow'}}>Hello</div>
           </Card>
